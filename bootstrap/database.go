@@ -18,7 +18,7 @@ func SetupDB() {
 	switch config.Get("database.connection") {
 	case "mysql":
 		// 构建 DSN 信息
-		dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=%v&parseTime=True&multiStatements=true&loc=local", config.Get("database.mysql.username"), config.Get("database.mysql.password"),
+		dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=%v&parseTime=True&multiStatements=true&loc=Local", config.Get("database.mysql.username"), config.Get("database.mysql.password"),
 			config.Get("database.mysql.host"), config.Get("database.mysql.port"), config.Get("database.mysql.database"), config.Get("database.mysql.charset"))
 		dbConfig = mysql.New(mysql.Config{
 			DSN: dsn,
