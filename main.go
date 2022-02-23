@@ -21,6 +21,9 @@ func main() {
 	flag.Parse()
 	config.InitConfig(env)
 
+	// 初始化 logger
+	bootstrap.SetupLogger()
+
 	// 初始化 DB
 	bootstrap.SetupDB()
 
@@ -36,4 +39,5 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
+
 }
