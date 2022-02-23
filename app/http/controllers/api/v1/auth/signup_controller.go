@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	v1 "gohub/app/http/controllers/api/v1"
 	"gohub/app/models/user"
 	"gohub/app/requests"
@@ -15,29 +14,11 @@ type SignupController struct {
 }
 
 func (sc *SignupController) IsPhoneExist(c *gin.Context) {
+
 	// 请求对象
 	request := requests.SignupPhoneExistRequest{}
 
-	// 解析 json 请求
-	if err := c.ShouldBindJSON(&request); err != nil {
-		// 解析失败, 返回 422 状态码和错误信息
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
-			"error": err.Error(),
-		})
-
-		// 打印错误信息
-		fmt.Println(err.Error())
-		// 出错了, 中断请求
-		return
-	}
-
-	// 表单验证
-	errs := requests.ValidateSignupPhoneExist(&request, c)
-	// 返回长度等于 0 即通过
-	if len(errs) > 0 {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
-			"errors": errs,
-		})
+	if ok := requests.Validate(c, &request, requests.ValidateSignupPhoneExist); !ok {
 		return
 	}
 
@@ -50,21 +31,7 @@ func (sc *SignupController) IsPhoneExist(c *gin.Context) {
 func (sc *SignupController) IsEmailExist(c *gin.Context) {
 	request := requests.SignupEmailExistRequest{}
 
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
-			"error": err.Error(),
-		})
-
-		fmt.Println(err.Error())
-		return
-	}
-
-	// 表单验证
-	errs := requests.ValidateSignupEmailExist(&request, c)
-	if len(errs) > 0 {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
-			"errors": errs,
-		})
+	if ok := requests.Validate(c, &request, requests.ValidateSignupEmailExist); !ok {
 		return
 	}
 
