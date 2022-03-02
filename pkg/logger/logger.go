@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"encoding/json"
 	"fmt"
 	"gohub/pkg/app"
 	"os"
@@ -101,4 +102,106 @@ func getLogWriter(filename string, maxSize, maxBackup, maxAge int, compress bool
 		return zapcore.AddSync(lumberJackLogger)
 	}
 
+}
+
+// 调试专用, 不会中断程序, 会在中断打印出 warning 消息
+func Dump(value interface{}, msg ...string) {
+	valueString := jsonString(value)
+	// 判断第二个参数是否传参 msg
+	if len(msg) > 0 {
+		Logger.Warn("Dump", zap.String(msg[0], valueString))
+	} else {
+		Logger.Warn("Dump", zap.String("data", valueString))
+	}
+}
+
+func LogIf(err error) {
+	if err != nil {
+		Logger.Error("Error Occurred:", zap.Error(err))
+	}
+}
+
+func LogWarnIf(err error) {
+	if err != nil {
+		Logger.Warn("Error Occurred:", zap.Error(err))
+	}
+}
+
+func LogInfoIf(err error) {
+	if err != nil {
+		Logger.Info("Error occurred:", zap.Error(err))
+	}
+}
+
+// 调试日志
+func Debug(mouduleName string, fields ...zap.Field) {
+	Logger.Debug(mouduleName, fields...)
+}
+
+func Info(moduleName string, fields ...zap.Field) {
+	Logger.Info(moduleName, fields...)
+}
+
+func Warn(moduleName string, fields ...zap.Field) {
+	Logger.Warn(moduleName, fields...)
+}
+
+// Error 错误时记录，不应该中断程序，查看日志时重点关注
+func Error(moduleName string, fields ...zap.Field) {
+	Logger.Error(moduleName, fields...)
+}
+
+// Fatal 级别同 Error(), 写完 log 后调用 os.Exit(1) 退出程序
+func Fatal(moduleName string, fields ...zap.Field) {
+	Logger.Fatal(moduleName, fields...)
+}
+
+// 记录一条字符串类型的 debug 日志
+func DebugString(moduleName, name, msg string) {
+	Logger.Debug(moduleName, zap.String(name, msg))
+}
+
+func InfoString(moduleName, name, msg string) {
+	Logger.Info(moduleName, zap.String(name, msg))
+}
+
+func WarnString(moduleName, name, msg string) {
+	Logger.Warn(moduleName, zap.String(name, msg))
+}
+
+func ErrorString(moduleName, name, msg string) {
+	Logger.Error(moduleName, zap.String(name, msg))
+}
+
+func FatalString(moduleName, name, msg string) {
+	Logger.Fatal(moduleName, zap.String(name, msg))
+}
+
+func DebugJSON(moduleName, name string, value interface{}) {
+	Logger.Debug(moduleName, zap.String(name, jsonString(value)))
+}
+
+func InfoJSON(moduleName, name string, value interface{}) {
+	Logger.Info(moduleName, zap.String(name, jsonString(value)))
+}
+
+func WarnJSON(moduleName, name string, value interface{}) {
+	Logger.Warn(moduleName, zap.String(name, jsonString(value)))
+}
+
+func ErrorJSON(moduleName, name string, value interface{}) {
+	Logger.Error(moduleName, zap.String(name, jsonString(value)))
+}
+
+func FatalJSON(moduleName, name string, value interface{}) {
+	Logger.Fatal(moduleName, zap.String(name, jsonString(value)))
+}
+
+func jsonString(value interface{}) string {
+	b, err := json.Marshal(value)
+	if err != nil {
+		Logger.Error("logger", zap.String("JSON marshal error", err.Error()))
+	}
+
+	return string(b)
 }
