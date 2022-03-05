@@ -1,7 +1,6 @@
 package response
 
 import (
-	"errors"
 	"gohub/pkg/logger"
 	"net/http"
 

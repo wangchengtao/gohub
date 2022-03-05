@@ -3,7 +3,6 @@ package requests
 import (
 	"fmt"
 	"gohub/pkg/response"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
