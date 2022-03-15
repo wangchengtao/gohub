@@ -1,7 +1,7 @@
 package requests
 
 import (
-	"gohub/pkg/captcha"
+	"gohub/app/requests/validators"
 
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
@@ -42,10 +42,48 @@ func VerifyCodePhone(data interface{}, c *gin.Context) map[string][]string {
 
 	// 图片验证码
 	_data := data.(*VerifyCodePhoneRequest)
-	if ok := captcha.NewCaptcha().VerifyCaptcha(_data.CaptchaID, _data.CaptchaAnswer); !ok {
-		errs["captcha_answer"] = append(errs["captcha_answer"], "图片验证码错误")
-	}
+	errs = validators.ValidateCaptcha(_data.CaptchaID, _data.CaptchaAnswer, errs)
 
 	return errs
 
+}
+
+type VerifyCodeEmailRequest struct {
+	CaptchaID     string `json:"captcha_id,omitempty" valid:"captcha_id"`
+	CaptchaAnswer string `json:"captcha_answer,omitempty" valid:"captcha_answer"`
+	Email         string `json:"email,omitempty" valid:"email"`
+}
+
+func VerifyCodeEmail(data interface{}, c *gin.Context) map[string][]string {
+	// 定制认证规则
+	rules := govalidator.MapData{
+		"captcha_id":     []string{"required"},
+		"captcha_answer": []string{"required", "digits:6"},
+		"email":          []string{"required", "email", "min:4", "max:30"},
+	}
+
+	// 定制错误消息
+	messages := govalidator.MapData{
+		"captcha_id": []string{
+			"required:图片验证码的 ID 必填",
+		},
+		"email": []string{
+			"required:邮箱必填",
+			"min:Email 长度需大于 4",
+			"max:email 长度需大于 30",
+			"email:email 格式不正确",
+		},
+		"captcha_answer": []string{
+			"required:图片验证码答案必填",
+			"digits:图片验证码长度必须为 6 位的数字",
+		},
+	}
+
+	errs := validate(data, rules, messages)
+
+	// 图片验证码
+	_data := data.(*VerifyCodeEmailRequest)
+	errs = validators.ValidateCaptcha(_data.CaptchaID, _data.CaptchaAnswer, errs)
+
+	return errs
 }
