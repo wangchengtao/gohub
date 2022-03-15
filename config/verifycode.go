@@ -19,7 +19,7 @@ func init() {
 
 			// 方便本地和 API 自动测试
 			"debug_phone_prefix": "000",
-			"debug_email_suffix": "@testing.com",
+			"debug_email_suffix": "@qq.com",
 		}
 	})
 }

@@ -63,3 +63,27 @@ func (sc *SignupController) SignupUsingPhone(c *gin.Context) {
 		response.Abort500(c, "创建用户失败, 请稍后尝试")
 	}
 }
+
+func (sc *SignupController) SignupUsingEmail(c *gin.Context) {
+	request := requests.SingupUsingEmailRequest{}
+	if ok := requests.Validate(c, &request, requests.SignupUsingEmail); !ok {
+		return
+	}
+
+	_user := user.User{
+		Name:     request.Name,
+		Password: request.Password,
+		Email:    request.Email,
+	}
+
+	_user.Create()
+
+	if _user.ID > 0 {
+		response.CreatedJSON(c, gin.H{
+			"data": _user,
+		})
+	} else {
+		response.Abort500(c, "创建用户失败，请稍后尝试~")
+	}
+
+}
