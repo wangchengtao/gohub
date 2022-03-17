@@ -113,24 +113,23 @@ func (jwt *JWT) RefreshToken(c *gin.Context) (string, error) {
 }
 
 // IssueToken 生成  Token，在登录成功时调用
-func (jwt *JWT) IssueToken(UserID string, userName string) string {
+func (jwt *JWT) IssueToken(userID string, userName string) string {
 
-	// 构造用户 claims 信息
+	// 1. 构造用户 claims 信息(负荷)
 	expireAtTime := jwt.ExpireAtTime()
-
 	claims := JWTCustomClaims{
-		UserID,
+		userID,
 		userName,
 		expireAtTime,
 		jwtpkg.StandardClaims{
-			NotBefore: app.TimenowInTimezone().Unix(),
-			IssuedAt:  app.TimenowInTimezone().Unix(),
-			ExpiresAt: expireAtTime,
-			Issuer:    config.GetString("app.name"),
+			NotBefore: app.TimenowInTimezone().Unix(), // 签名生效时间
+			IssuedAt:  app.TimenowInTimezone().Unix(), // 首次签名时间（后续刷新 Token 不会更新）
+			ExpiresAt: expireAtTime,                   // 签名过期时间
+			Issuer:    config.GetString("app.name"),   // 签名颁发者
 		},
 	}
 
-	// 根据 claims 生成 token 对象
+	// 2. 根据 claims 生成token对象
 	token, err := jwt.CreateToken(claims)
 	if err != nil {
 		logger.LogIf(err)
@@ -141,7 +140,7 @@ func (jwt *JWT) IssueToken(UserID string, userName string) string {
 }
 
 func (jwt *JWT) CreateToken(claims JWTCustomClaims) (string, error) {
-	token := jwtpkg.NewWithClaims(jwtpkg.SigningMethodES256, claims)
+	token := jwtpkg.NewWithClaims(jwtpkg.SigningMethodHS256, claims)
 
 	return token.SignedString(jwt.SignKey)
 }
