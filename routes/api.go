@@ -28,6 +28,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			// 注册
 			lgc := new(auth.LoginController)
 			authGroup.POST("/login/using-phone", lgc.LoginByPhone)
+			authGroup.POST("/login/using-password", lgc.LoginByPassword)
 		}
 	}
 }
