@@ -1,6 +1,7 @@
 package routes
 
 import (
+	v12 "gohub/app/http/controllers/api/v1"
 	"gohub/app/http/controllers/api/v1/auth"
 	"gohub/app/http/middlewares"
 
@@ -28,7 +29,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.POST("/verify-codes/phone", middlewares.LimitPerRoute("20-H"), vcc.SendUsingPhone)
 			authGroup.POST("/verify-codes/email", middlewares.LimitPerRoute("20-H"), vcc.SendUsingEmail)
 
-			// 注册
+			// 登录
 			lgc := new(auth.LoginController)
 			authGroup.POST("/login/using-phone", middlewares.GuestJWT(), lgc.LoginByPhone)
 			authGroup.POST("/login/using-password", middlewares.GuestJWT(), lgc.LoginByPassword)
@@ -38,6 +39,9 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			pwc := new(auth.PasswordController)
 			authGroup.POST("/password-reset/using-phone", middlewares.GuestJWT(), pwc.ResetByPhone)
 			authGroup.POST("/password-reset/using-email", middlewares.GuestJWT(), pwc.ResetByEmail)
+
+			uc := new(v12.UsersController)
+			authGroup.GET("/user", middlewares.AuthJWT(), uc.CurrentUser)
 		}
 	}
 }
