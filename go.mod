@@ -20,6 +20,7 @@ require (
 )
 
 require (
+	github.com/bxcodec/faker/v3 v3.8.0 // indirect
 	github.com/gertd/go-pluralize v0.2.0 // indirect
 	github.com/iancoleman/strcase v0.2.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
