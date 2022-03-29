@@ -39,9 +39,14 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			pwc := new(auth.PasswordController)
 			authGroup.POST("/password-reset/using-phone", middlewares.GuestJWT(), pwc.ResetByPhone)
 			authGroup.POST("/password-reset/using-email", middlewares.GuestJWT(), pwc.ResetByEmail)
+		}
 
-			uc := new(v12.UsersController)
-			authGroup.GET("/user", middlewares.AuthJWT(), uc.CurrentUser)
+		uc := new(v12.UsersController)
+		v1.GET("/user", middlewares.AuthJWT(), uc.CurrentUser)
+		usersGroup := v1.Group("/users")
+		{
+			usersGroup.GET("", uc.Index)
+
 		}
 	}
 }
