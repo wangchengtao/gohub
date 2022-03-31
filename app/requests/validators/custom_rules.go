@@ -71,4 +71,31 @@ func init() {
 		}
 		return nil
 	})
+
+	govalidator.AddCustomRule("exists", func(field string, rule string, message string, value interface{}) error {
+		rng := strings.Split(strings.TrimPrefix(rule, "exists:"), ",")
+
+		// 第一个参数表名称
+		tableName := rng[0]
+
+		// 第二个参数, 字段名称
+		dbField := rng[1]
+
+		// 用户请求过来的数据
+		requestValue := value.(string)
+
+		// 查询数据库
+		var count int64
+		database.DB.Table(tableName).Where(dbField+" = ?", requestValue).Count(&count)
+
+		// 验证不通过
+		if count == 0 {
+			if message != "" {
+				return errors.New(message)
+			}
+			return fmt.Errorf("%v 不存在", requestValue)
+		}
+
+		return nil
+	})
 }
