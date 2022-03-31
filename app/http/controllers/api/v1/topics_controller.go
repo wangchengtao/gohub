@@ -72,3 +72,23 @@ func (ctrl *TopicsController) Show(c *gin.Context) {
 		response.Data(c, topicModel)
 	}
 }
+func (ctrl *TopicsController) Delete(c *gin.Context) {
+	topicModel := topic.Get(c.Param("id"))
+	if topicModel.ID == 0 {
+		response.Abort404(c)
+		return
+	}
+
+	if ok := policies.CanModifyTopic(c, topicModel); !ok {
+		response.Abort403(c)
+		return
+	}
+
+	rowAffected := topicModel.Delete()
+	if rowAffected > 0 {
+		response.Success(c)
+		return
+	}
+
+	response.Abort500(c, "删除失败")
+}
