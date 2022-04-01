@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"gohub/pkg/cache"
 	"gohub/pkg/console"
 
@@ -19,10 +20,26 @@ var CmdCacheClear = &cobra.Command{
 	Run:   runCacheClear,
 }
 
+var CmdCacheForget = &cobra.Command{
+	Use:   "forget",
+	Short: "delete redis key",
+	Run:   runCacheForget,
+}
+
+var cacheKey string
+
+func runCacheForget(cmd *cobra.Command, args []string) {
+	cache.Forget(cacheKey)
+	console.Success(fmt.Sprintf("Cache key [%s] deleted.", cacheKey))
+}
+
 func init() {
 	CmdCache.AddCommand(
 		CmdCacheClear,
 	)
+
+	CmdCacheForget.Flags().StringVarP(&cacheKey, "key", "k", "", "KEY of the cache")
+	CmdCacheForget.MarkFlagRequired("key")
 }
 
 func runCacheClear(cmd *cobra.Command, args []string) {
