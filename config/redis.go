@@ -9,6 +9,8 @@ func init() {
 			"port":     config.Env("REDIS_PORT", "6379"),
 			"password": config.Env("REDIS_PASSWORD", ""),
 			"database": config.Env("REDIS_DATABASE", 1),
+
+			"database_cache": config.Env("REDIS_CACHE_DB", 0),
 		}
 	})
 }
