@@ -1,7 +1,7 @@
 package routes
 
 import (
-	v12 "gohub/app/http/controllers/api/v1"
+	controllers "gohub/app/http/controllers/api/v1"
 	"gohub/app/http/controllers/api/v1/auth"
 	"gohub/app/http/middlewares"
 
@@ -41,14 +41,14 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.POST("/password-reset/using-email", middlewares.GuestJWT(), pwc.ResetByEmail)
 		}
 
-		uc := new(v12.UsersController)
+		uc := new(controllers.UsersController)
 		v1.GET("/user", middlewares.AuthJWT(), uc.CurrentUser)
 		usersGroup := v1.Group("/users")
 		{
 			usersGroup.GET("", uc.Index)
 		}
 
-		cgc := new(v12.CategoriesController)
+		cgc := new(controllers.CategoriesController)
 		cgcGroup := v1.Group("/categories")
 		{
 			cgcGroup.GET("", cgc.Index)
@@ -57,7 +57,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			cgcGroup.DELETE("/:id", middlewares.AuthJWT(), cgc.Delete)
 		}
 
-		tpc := new(v12.TopicsController)
+		tpc := new(controllers.TopicsController)
 		tpcGroup := v1.Group("/topics")
 		{
 			tpcGroup.GET("", tpc.Index)
@@ -65,6 +65,12 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			tpcGroup.PUT("/:id", middlewares.AuthJWT(), tpc.Update)
 			tpcGroup.GET("/:id", tpc.Show)
 			tpcGroup.DELETE("/:id", middlewares.AuthJWT(), tpc.Delete)
+		}
+
+		lsc := new(controllers.LinksController)
+		linksGroup := v1.Group("/links")
+		{
+			linksGroup.GET("", lsc.Index)
 		}
 	}
 }
