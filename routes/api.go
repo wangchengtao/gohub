@@ -48,6 +48,9 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			usersGroup.GET("", uc.Index)
 			usersGroup.PUT("", middlewares.AuthJWT(), uc.UpdateProfile)
 			usersGroup.PUT("/email", middlewares.AuthJWT(), uc.UpdateEmail)
+			usersGroup.PUT("/phone", middlewares.AuthJWT(), uc.UpdatePhone)
+			usersGroup.PUT("/password", middlewares.AuthJWT(), uc.UpdatePassword)
+			usersGroup.PUT("/avatar", middlewares.AuthJWT(), uc.UpdateAvatar)
 
 		}
 
@@ -58,9 +61,6 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			cgcGroup.POST("", middlewares.AuthJWT(), cgc.Store)
 			cgcGroup.PUT("/:id", middlewares.AuthJWT(), cgc.Update)
 			cgcGroup.DELETE("/:id", middlewares.AuthJWT(), cgc.Delete)
-			usersGroup.PUT("/email", middlewares.AuthJWT(), uc.UpdateEmail)
-			usersGroup.PUT("/phone", middlewares.AuthJWT(), uc.UpdatePhone)
-			usersGroup.PUT("/password", middlewares.AuthJWT(), uc.UpdatePassword)
 
 		}
 
