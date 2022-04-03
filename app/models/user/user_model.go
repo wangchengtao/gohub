@@ -9,7 +9,12 @@ import (
 type User struct {
 	models.BaseModel
 
-	Name     string `json:"name,omitempty"`
+	Name string `json:"name,omitempty"`
+
+	City         string `json:"city,omitempty"`
+	Introduction string `json:"introduction,omitempty"`
+	Avatar       string `json:"avatar,omitempty"`
+
 	Email    string `json:"-"`
 	Phone    string `json:"-"`
 	Password string `json:"-"`
@@ -17,16 +22,16 @@ type User struct {
 	models.CommonTimestampsField
 }
 
-func (u *User) Create() {
-	database.DB.Create(&u)
+func (userModel *User) Create() {
+	database.DB.Create(&userModel)
 }
 
-func (u *User) ComparePassword(_password string) bool {
-	return hash.BcryptCheck(_password, u.Password)
+func (userModel *User) ComparePassword(_password string) bool {
+	return hash.BcryptCheck(_password, userModel.Password)
 }
 
-func (u *User) Save() (rowsAffected int64) {
-	result := database.DB.Save(&u)
+func (userModel *User) Save() (rowsAffected int64) {
+	result := database.DB.Save(&userModel)
 
 	return result.RowsAffected
 }
