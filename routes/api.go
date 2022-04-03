@@ -60,6 +60,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			cgcGroup.DELETE("/:id", middlewares.AuthJWT(), cgc.Delete)
 			usersGroup.PUT("/email", middlewares.AuthJWT(), uc.UpdateEmail)
 			usersGroup.PUT("/phone", middlewares.AuthJWT(), uc.UpdatePhone)
+			usersGroup.PUT("/password", middlewares.AuthJWT(), uc.UpdatePassword)
 
 		}
 
